@@ -25,6 +25,32 @@ def video_capture():
         with lock:
             frame = f
     cap.release()
+    
+def winOrNot (computer,me):
+    # Class labels: {0: 'paper', 1: 'rock', 2: 'scissors'}
+    if (computer == 1):
+        if me == 'paper':
+            return "win"
+        elif me == 'rock' :
+            return "draw"
+        elif me == 'scissors' :
+            return "lose"
+    elif (computer == 0):
+        if me == 'paper':
+            return "draw"
+        elif me == 'rock' :
+            return "lose"
+        elif me == 'scissors' :
+            return "win"        
+    elif (computer == 2):
+        if me == 'paper':
+            return "lose"
+        elif me == 'rock' :
+            return "win"
+        elif me == 'scissors' :
+            return "draw"           
+    else:
+        return str(computer)
 
 def process_frame():
     global frame, countdown_done, info_displayed
@@ -77,11 +103,11 @@ def process_frame():
                     # 카운트다운이 끝난 후 컴퓨터의 랜덤 응답을 결정합니다.
                     computer_Answer = random.randrange(0, 3)
                     if computer_Answer == 0:
-                        CA = "COMPUTER - rock"
-                    elif computer_Answer == 1:
-                        CA = "COMPUTER - scissors"
-                    else:
                         CA = "COMPUTER - paper"
+                    elif computer_Answer == 1:
+                        CA = "COMPUTER - rock"
+                    elif computer_Answer == 2:
+                        CA = "COMPUTER - scissors"
                     
                     countdown_done = True  # 카운트다운이 완료되었음을 표시
                     info_displayed = True  # 3초 후 정보 출력을 중단하도록 설정
@@ -91,8 +117,11 @@ def process_frame():
                 cv2.putText(frame, str(countdown_number), (frame.shape[1] // 2 - 50, frame.shape[0] // 2), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
             elif countdown_done:
                 # 카운트다운이 끝난 후 컴퓨터의 응답을 표시
-                cv2.putText(frame, CA, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-                cv2.putText(frame, max_label, (200, 200), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+                cv2.putText(frame, CA, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+                cv2.putText(frame, "YOU - " +str(max_label), (350, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+                answer = winOrNot(computer_Answer,max_label)
+                print("answer",answer)
+                cv2.putText(frame, answer, (200, 200), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
 
             # 결과 창 띄우기
             cv2.imshow("Gesture Detection", frame)
@@ -118,3 +147,7 @@ process_thread.join()
 # 동영상 캡처 상태를 업데이트하여 캡처 스레드를 종료
 capture_running = False
 video_thread.join()
+
+
+        
+        
